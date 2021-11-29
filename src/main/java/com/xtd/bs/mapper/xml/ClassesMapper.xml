@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtd.bs.mapper.ClassesMapper">
+
+
+
+    <!--查询所有班级-->
+    <select id="findAllClass" resultType="com.xtd.bs.entity.Classes">
+        select * from classes
+    </select>
+
+    <select id="findAllClassByPage" resultType="com.xtd.bs.entity.Classes">
+        select c.*, m.mname as mname,t.tname as tname, t.tphone as tphone from classes c inner join major m
+            on m.mid = c.majorid
+            inner join teacher t
+            on c.tno = t.tno
+            <where>
+                <if test="lname!=null and lname !=''">
+                    and c.lname like  concat('%',#{lname},'%')
+                </if>
+                <if test="mname != null and mname !=''">
+                    and m.mname like concat('%',#{mname},'%')
+                </if>
+            </where>
+    </select>
+
+    <insert id="addClasses">
+        insert into classes(lname, majorid, tno) VALUES (#{lname},#{majorid},#{tno})
+    </insert>
+
+    <update id="updateClasses" parameterType="com.xtd.bs.entity.Classes">
+        update classes
+        <set>
+            <if test="lname !=null and lname !=''">
+                lname = #{lname},
+            </if>
+            <if test="majorid != null">
+                majorid = #{majorid},
+            </if>
+            <if test="tno !=null ">
+                tno = #{tno},
+            </if>
+        </set>
+            where lno =#{lno}
+    </update>
+
+
+    <delete id="deleteClassesById" parameterType="int">
+        delete from classes where lno = #{id}
+    </delete>
+</mapper>

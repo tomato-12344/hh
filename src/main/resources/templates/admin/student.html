@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{layui/lib/layui-v2.5.5/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{layui/css/public.css}" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <!-- 搜索条件 -->
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">学生学号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="sno" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">学生姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="sname" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">学生性别</label>
+                            <div class="layui-input-inline">
+                                <select name="ssex" autocomplete="off" class="layui-input">
+                                    <option value="">请选择性别</option>
+                                    <option value="0">男</option>
+                                    <option value="1">女</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">所属班级</label>
+                            <div class="layui-input-inline">
+                                <select name="lno" autocomplete="off" id="lno" class="layui-input">
+                                    <option value="">请选择班级</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">身份证号码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="scarid" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block" style="text-align: center">
+                            <button type="submit" class="layui-btn"  lay-submit lay-filter="data-search-btn"><i class="layui-icon layui-icon-search"></i>搜索</button>
+                            <button type="reset" class="layui-btn layui-btn-warm"><i class="layui-icon layui-icon-refresh-1"></i>重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <!-- 表格工具栏 -->
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-inline layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加 </button>
+            </div>
+            <div class="layui-inline layui-btn-container">
+                <button class= "layui-btn layui-btn-sm  layui-btn-normal" lay-event="importExce" ><i class="layui-icon layui-icon-add-1"></i>导入Excel</button>
+            </div>
+        </script>
+        <!--导出的上传框-->
+        <div class="layui-form-item" style="display: none;" id="importDiv">
+            <div class="layui-upload-drag" id="importExcel">
+                <i class="layui-icon"></i>
+                <p>点击上传，或将Excel文件拖拽到此处</p>
+                <div class="layui-hide"  id="importExcelDiv">
+                    <input type="hidden" name="importExcel"/>
+                </div>
+            </div>
+        </div>
+        <!-- 数据表格 -->
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <!-- 行工具栏 -->
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete"><i class="layui-icon layui-icon-close"></i>删除</a>
+        </script>
+        <!-- 添加和修改窗口 -->
+        <div style="display: none;padding: 5px" id="addOrUpdateWindow">
+            <form class="layui-form" style="width:90%;" id="dataFrm" lay-filter="dataFrm">
+                <!-- 隐藏域，保存员工id -->
+                <input type="hidden" name="sid" id="id">
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">学生学号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sno" id="s_no" lay-verify="required"  autocomplete="off" placeholder="请输入学生学号" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">学生姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sname" id="s_name" lay-verify="required" autocomplete="off" placeholder="请输入学生姓名" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">身份证号码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="scarid" id="scarid" lay-verify="required" autocomplete="off" placeholder="手机号码" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="text-align: right">出生日期</label>
+                        <div class="layui-input-block"style="text-align: right">
+                            <input type="text" name="sbirthday" id="s_birthday" readonly lay-verify="required" autocomplete="off" placeholder="请选择出生日期" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">手机号码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sphone" id="sphone" lay-verify="required" autocomplete="off" placeholder="手机号码" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">家长号码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sparentPhone" id="sparentphone" lay-verify="required" autocomplete="off" placeholder="家长号码" class="layui-input">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-form-item">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">宿舍地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="dormitory" id="dormitory" lay-verify="required" autocomplete="off" placeholder="家长号码" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">学生班级</label>
+                        <div class="layui-input-inline">
+                            <select name="lno" autocomplete="off" id="l_no" class="layui-input">
+                                <option value="">请选择班级</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">学生性别</label>
+                        <div class="layui-input-block " >
+                            <input type="radio" name="ssex" value="0" title="男" checked>
+                            <input type="radio" name="ssex"  value="1" title="女" >
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item layui-row layui-col-xs12">
+                    <div class="layui-input-block" style="text-align: center;">
+                        <button type="button" class="layui-btn" lay-submit lay-filter="doSubmit"><span class="layui-icon layui-icon-add-1"></span>提交</button>
+                        <button type="button" class="layui-btn layui-btn-warm" ><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+<script th:src="@{layui/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script th:src="@{layui/lib/jquery-3.4.1/jquery-3.4.1.min.js}" charset="UTF-8"></script>
+<script>
+
+    layui.use(['form', 'table','jquery','upload','laydate'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            upload = layui.upload,
+            laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#s_birthday' //指定元素
+        });
+
+
+        //渲染表格组件   查询所有学生
+        var tableIns = table.render({
+            elem: '#currentTableId',
+            url: 'bs/student/list',
+            toolbar: '#toolbarDemo',
+            cols: [
+                [
+                {type: "checkbox", width: 30},
+                // {field: 'sid', width: 60, title: '编号', align: "center"},
+                {field: 'sno', width: 125, title: '学生学号', align: "center"},
+                {field: 'sname', width: 100, title: '真实姓名', align: "center"},
+                {field: 'ssex', width: 60, title: '性别', align: "center",templet:function (d) {
+                        return d.ssex === 0? "男" :"女";
+                    }},
+                {field: 'sbirthday', width: 150, title: '出生日期', align: "center",templet:function (d) {
+                        return d.sbirthday;
+                    }},
+                {field: 'scarid', width: 180, title: '身份证号码', align: "center"},
+                {field: 'sphone', width: 120, title: '手机号码', align: "center"},
+                {field: 'sparentPhone', width: 120, title: '家长号码', align: "center"},
+
+                {field: 'dormitory', width: 120, title: '宿舍地址', align: "center"},
+                {field: 'lname', width: 120, title: '班级信息', align: "center"},
+
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+                ]
+            ],
+            page: true,
+            done: function (res, curr, count) {
+                //判断当前页码是否是大于1并且当前页的数据量为0
+                if (curr > 1 && res.data.length == 0) {
+                    var pageValue = curr - 1;
+                    //刷新数据表格的数据
+                    tableIns.reload({
+                        page: {curr: pageValue}
+                    });
+                }
+            }
+        });
+
+        //监听模糊查询的操作
+        form.on('submit(data-search-btn)', function (data) {
+            tableIns.reload({
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false;
+        });
+
+        //发送ajax请求查询班级列表 //已成功
+        $.get("/bs/classes/classesList",function (result) {
+            // console.log(result)
+            var html = "";
+            //循环遍历
+            for (var i = 0;i<result.length;i++){
+                console.log(result[i].lno+result[i].lname)
+                html += "<option value='"+result[i].lno+"'>"+result[i].lname+"<option>"
+            }
+            //将html追加到下拉列表中
+            $("[name='lno']").append(html);
+
+            //重新渲染下拉列表组件
+            form.render("select");
+        },"json");
+
+        //监听头部工具栏事件、toolbar是工具栏事件、currentTableFilter是表格lay-filterg表格过滤器的值
+        table.on("toolbar(currentTableFilter)",function (obj) {
+            //监听事件
+            switch (obj.event) {
+                case "add"://添加按钮
+                    openAddWindow();//打开添加窗口
+                    break;
+                case "importExce":
+                    importExce();
+            }
+        });
+
+        //监听行工具栏事件
+        table.on("tool(currentTableFilter)",function (obj) {
+            //输出一下obj
+            console.log(obj);
+            switch (obj.event) {
+                case "edit"://修改按钮
+                    openUpdateWindow(obj.data);//打开修改窗口
+                    break;
+                case "delete"://删除按钮
+                    deleteById(obj.data);//打开修改窗口
+                    break;
+            }
+        });
+
+
+        var imports;
+        function importExce(){
+            imports =
+                layer.open({
+                type:1,
+                title:"导入execl",
+                content:$("#importDiv"),
+                area:['auto'],
+                anim : 4,
+                btnAlign : 'c',
+            })
+        }
+
+
+        upload.render({
+            elem: '#importExcel',
+            url: '/bs/student/importExcel',
+            accpet: 'file',
+            exts : 'xlsx',
+            done: function(res){
+                if(res){
+                    layer.msg('导入成功');
+                    layer.close(imports);
+                    tableIns.reload();
+                }else{
+                    layer.msg('导入失败');
+                    layer.close(imports);
+                }
+            }
+
+        })
+
+        //提交地址
+        var url;
+        var mainIndex;//打开窗口的索引
+
+        //打开添加窗口
+        function openAddWindow() {
+            mainIndex=
+            layer.open({
+                type: 1,//打开的类型
+                title: "添加学生", //窗口标题
+                area: ["800px","400px"], //窗口的宽高
+                content: $("#addOrUpdateWindow"),//引用的内容窗口
+                success: function () {
+                    //清空表单数据
+                    $("#dataFrm")[0].reset();
+                    //添加的提交请求
+                    url = "/bs/student/addStudent";
+                }
+            });
+        }
+
+        //打开修改窗口
+        function openUpdateWindow(data) {
+            console.log(data)
+            mainIndex=
+                layer.open({
+                    type: 1,//打开的类型
+                    title: "修改学生信息", //窗口标题
+                    area: ["800px","400px"], //窗口的宽高
+                    content: $("#addOrUpdateWindow"),//引用的内容窗口
+                    success: function () {
+                        //表单数据回显 form.val拿到lay-filter属性
+                        var hh = form.val("dataFrm",data);//参数1：lay-filter值 参数2
+                        console.log("回显的数据2"+data.valueOf())
+                        console.log("回显的数据"+hh.sno+hh.sbirthday+hh.lno+hh.sname)
+                        //修改的提交请求
+                        url = "/bs/student/updateStudent";
+                    }
+                });
+        }
+
+        // 监听表单提交事件  此处监听的添加和修改的表单
+        form.on("submit(doSubmit)",function (data) {
+            console.log("监听表单提交事件"+data)
+            //发送ajax请求
+            //data.field即拿到表单里面的提交的数据
+            $.post(url,data.field,function (result) {
+                if(result.success){
+                    //提示成功信息
+                    // layer.msg(result.message);
+                    //刷新数据表格
+                    tableIns.reload();
+                    //关闭窗口
+                    layer.close(mainIndex);
+                }
+                //提示信息
+                layer.msg(result.message);
+            },"json");
+
+            //禁止页面刷新
+            return false;
+        });
+
+        /**
+         * 删除员工 当前行数据
+         * @param data
+         */
+        function deleteById(data){
+            console.log(data)
+            //判断当前部门下是否存在员工
+            //思路：发送无刷新请求,即ajax请求。获取要删除的部门是否有员工
+            //通过{}取值，"id":data.id这种方式来取值
+            //获取请求的url和参数，返回的结果集
+            layer.confirm("确定要删除[<font color='red'>"+data.sname+"</font>]吗？", {icon: 3, title:'提示'}, function(index){
+                //发送ajax做无刷新操作
+                $.post("/bs/student/deleteStudentById",{"id":data.sid},function (result) {
+                    if(result.message){
+                        //删除数据之后要刷新表格
+                        tableIns.reload();
+                    }
+                    //提示
+                    layer.msg(result.message)
+                },"json");
+                layer.close(index);
+
+            });
+        }
+
+        /**
+         * 重置密码
+         * @param data
+         */
+        function resetPwd(data){
+            //提示用户是否确认重置
+            layer.confirm("确定要重置[<font color='red'>"+data.name+"</font>]的密码吗？", {icon: 3, title:'提示'}, function(index){
+                //发送ajax做无刷新操作  重置密码操作
+                $.post("/admin/employee/resetPwd",{"id":data.id},function (result) {
+                    if(result.message){
+                        //删除数据之后要刷新表格
+                        tableIns.reload();
+                    }
+                    //提示
+                    layer.msg(result.message)
+                },"json");
+                layer.close(index);
+
+            });
+        }
+
+
+    });
+
+</script>
+
+</body>
+</html>

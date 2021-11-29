@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtd.bs.mapper.SemesterMapper">
+    <insert id="addSemester">
+        insert into semester (name, remark, gmt_created) VALUES (#{name},#{remark},#{gmtCreated})
+    </insert>
+    <update id="updateSemester">
+        update semester
+        <set>
+            <if test="name!=null and name != ''">
+              name = #{name},
+            </if>
+            <if test="remark!=null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteSemester">
+        delete from semester where id = #{id}
+    </delete>
+
+    <select id="findAllSemester" resultType="com.xtd.bs.entity.Semester">
+        select * from semester
+    </select>
+</mapper>

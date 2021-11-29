@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtd.bs.mapper.StudentMapper">
+
+
+
+    <select id="students" resultType="com.xtd.bs.entity.Student">
+        SELECT s.*,c.`lname` AS lname  FROM student s
+              INNER JOIN
+          classes c ON s.lno = c.`lno`
+        <where>
+            <if test="sno !=null and sno !=''">
+                and s.sno like concat('%',#{sno},'%')
+            </if>
+            <if test="sname !=null and sname !=''">
+                and s.sname like concat('%',#{sname},'%')
+            </if>
+            <if test="ssex != null">
+                and s.ssex = #{ssex}
+            </if>
+            <if test="lno != null ">
+                and c.lno = #{lno}
+            </if>
+            <if test="scarid != null and scarid !=''">
+                and s.scarid = #{scarid}
+            </if>
+
+        </where>
+    </select>
+
+    <insert id="addStudent" parameterType="com.xtd.bs.entity.Student">
+         insert into student(sno,sname,ssex,sbirthday,scarid,sphone,sparentphone,dormitory,lno)
+         values(#{sno},#{sname},#{ssex},#{sbirthday},#{scarid},#{sphone},#{sparentPhone},#{dormitory},#{lno})
+    </insert>
+
+    <update id="updateStudent" parameterType="com.xtd.bs.entity.Student">
+        update student
+        <set>
+            <if test="sno !=null and sno !=''">
+                sno = #{sno},
+            </if>
+            <if test="sname !=null and sname !=''">
+                sname = #{sname},
+            </if>
+            <if test="ssex !=null">
+                ssex = #{ssex},
+            </if>
+            <if test="sbirthday !=null ">
+                sbirthday = #{sbirthday},
+            </if>
+            <if test="scarid !=null and scarid !=''">
+                scarid = #{scarid},
+            </if>
+            <if test="sphone !=null and sphone !=''">
+                sphone = #{sphone},
+            </if>
+            <if test="sparentPhone !=null and sparentPhone !=''">
+                sparentPhone = #{sparentPhone},
+            </if>
+            <if test="dormitory !=null and dormitory !=''">
+                dormitory = #{dormitory},
+            </if>
+            <if test="lno != null">
+                lno = #{lno},
+            </if>
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <delete id="deleteStudent" parameterType="int">
+        delete from student where sid = #{sid}
+    </delete>
+</mapper>

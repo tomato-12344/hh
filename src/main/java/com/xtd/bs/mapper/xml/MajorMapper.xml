@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtd.bs.mapper.MajorMapper">
+
+    <select id="findAllMajor" resultType="com.xtd.bs.entity.Major">
+        select * from major
+        <where>
+            <if test="mname !=null and mname !=''">
+                and mname like concat('%',#{mname},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="addMajor">
+        insert into major ( mname, mremark) VALUES (#{mname},#{mremark})
+    </insert>
+
+    <update id="updateMajor">
+        update major
+        <set>
+            <if test="mname != null and mname !=''">
+                mname = #{mname},
+            </if>
+            <if test="mremark != null and mremark !=''">
+                mremark = #{mremark}
+            </if>
+        </set>
+        where mid = #{mid}
+    </update>
+
+
+    <delete id="deleteMajor">
+        delete from major where mid = #{id}
+    </delete>
+
+
+    <select id="majorList" resultType="com.xtd.bs.entity.Major">
+        select * from major
+    </select>
+</mapper>

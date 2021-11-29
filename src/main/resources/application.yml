@@ -1,0 +1,74 @@
+server:
+  port: 8082
+  #连接超时，单位为毫秒，-1永不超时
+  tomcat:
+    connection-timeout: 60000
+    uri-encoding: utf-8
+    max-connections: 10000
+    min-spare-threads: 10
+    #最大220个并发，可以达到不丢包（可以自己实测），默认为200。
+    max-threads: 220
+  #配置访问路径，默认为/
+#  servlet:
+#    context-path:
+
+
+
+
+spring:
+  application:
+    name: manager-system
+  profiles:
+    active: dev
+  thymeleaf:
+    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+    #严格执行H5标准
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bs?serverTimezone=GMT%2B8&useUnicode=true&charcterEncoding=UTF-8
+    username: root
+    password: 123456
+  web:
+    resources:
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: /**
+
+  mvc:
+    static-path-pattern: /**
+    #关闭原生的icon图标
+#    favicon:
+#      enabled: false
+
+
+#配置日志文件参数
+logging:
+  file:
+    path: C:/Users/谢腾达/Desktop/bishe/log
+  level:
+    org:
+      springframework: info
+    hibernate: debug
+
+mybatis-plus:
+  mapper-locations: classpath:/com/xtd/bs/mapper/xml/*.xml
+  type-aliases-package: com.xtd.bs.entity
+
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params=count: countSql
+  row-bounds-with-count: true
+  pageSizeZero: true
